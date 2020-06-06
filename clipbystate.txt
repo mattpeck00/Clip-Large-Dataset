@@ -1,0 +1,36 @@
+import processing
+import os
+
+Statesfile = (r'C:\Users\cb_2018_us_state_500k.shp')
+HydroData = (r'C:\Users\NHD_fixed.shp')
+HydroOutputfile = (r'C:\Users\hydroclipped')
+
+#insert state name to run in extractbyattribute
+StateName = 'Wisconsin'
+output = (r'C:\Users\Matthew\Documents\MappingProjects\usstates\StatesIndividually')
+FileExtension = '.shp'
+seperator = '/'
+
+#create output concatenation
+OutputExtract = output + seperator + StateName + FileExtension
+
+if os.path.isfile(OutputExtract):
+   os.remove(OutputExtract)
+
+processing.run("native:extractbyattribute",\
+{'INPUT':Statesfile,'FIELD':'NAME','OPERATOR':0,'VALUE': StateName ,'OUTPUT': OutputExtract})
+print('extract done')
+#clip National Hydro data b extracted output
+
+#cliped output concatenation
+HydroFileExtension = 'NHD.shp'
+Hydroclip = HydroOutputfile + seperator + StateName + HydroFileExtension
+
+if os.path.isfile(Hydroclip):	
+   os.remove(Hydroclip)
+
+processing.run("native:clip", {'INPUT':HydroData,'OVERLAY':OutputExtract,'OUTPUT':Hydroclip})
+
+print("Clip Done")
+
+
